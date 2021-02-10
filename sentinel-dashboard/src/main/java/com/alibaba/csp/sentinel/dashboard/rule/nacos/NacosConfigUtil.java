@@ -52,7 +52,6 @@ public class NacosConfigUtil {
      * @param clazz:反序列化class类型
      * @return:
      * @exception:
-     * @date:2019/12/2 14:38
      */
     public <T> List<T> getRuleEntitiesFromNacos(ConfigService configService, String appName, String postfix, Class<T> clazz) throws NacosException {
         //去nacos注册中心获取配置
@@ -73,7 +72,6 @@ public class NacosConfigUtil {
      * @param rules:规则列表
      * @return:
      * @exception:
-     * @date:2019/12/2 14:49
      */
     public  <T> void setRuleString2Nacos(ConfigService configService, String app, String postfix, List<T> rules) throws NacosException {
         AssertUtil.assertNotBlank(app,"app name not be empty");
@@ -111,7 +109,6 @@ public class NacosConfigUtil {
      * @param postfix 规则后缀 eg.NacosConfigUtil.FLOW_DATA_ID_POSTFIX
      * @return:
      * @exception:
-     * @date:2019/12/2 14:34
      */
     private  String genDataId(String appName, String postfix) {
         return appName + postfix;
