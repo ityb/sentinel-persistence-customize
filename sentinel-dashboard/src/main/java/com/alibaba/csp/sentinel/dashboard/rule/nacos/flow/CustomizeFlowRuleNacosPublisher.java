@@ -17,6 +17,7 @@ package com.alibaba.csp.sentinel.dashboard.rule.nacos.flow;
 
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.FlowRuleEntity;
 import com.alibaba.csp.sentinel.dashboard.rule.DynamicRulePublisher;
+import com.alibaba.csp.sentinel.dashboard.rule.nacos.DynamicConfig;
 import com.alibaba.csp.sentinel.dashboard.rule.nacos.NacosConfigUtil;
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.util.AssertUtil;
@@ -35,8 +36,12 @@ public class CustomizeFlowRuleNacosPublisher implements DynamicRulePublisher<Lis
 
     @Autowired
     private ConfigService configService;
+
     @Autowired
     private Converter<List<FlowRuleEntity>, String> converter;
+
+    @Autowired
+    private DynamicConfig dynamicConfig;
 
     @Override
     public void publish(String app, List<FlowRuleEntity> rules) throws Exception {
@@ -44,7 +49,6 @@ public class CustomizeFlowRuleNacosPublisher implements DynamicRulePublisher<Lis
         if (rules == null) {
             return;
         }
-        configService.publishConfig(app + NacosConfigUtil.FLOW_DATA_ID_POSTFIX,
-            NacosConfigUtil.GROUP_ID, converter.convert(rules));
+        configService.publishConfig(app + dynamicConfig.getFlowDataIdPostfix(), dynamicConfig.getGroup(), converter.convert(rules));
     }
 }

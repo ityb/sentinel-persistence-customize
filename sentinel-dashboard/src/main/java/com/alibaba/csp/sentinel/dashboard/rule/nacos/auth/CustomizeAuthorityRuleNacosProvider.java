@@ -2,6 +2,7 @@ package com.alibaba.csp.sentinel.dashboard.rule.nacos.auth;
 
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.AuthorityRuleEntity;
 import com.alibaba.csp.sentinel.dashboard.rule.DynamicRuleProvider;
+import com.alibaba.csp.sentinel.dashboard.rule.nacos.DynamicConfig;
 import com.alibaba.csp.sentinel.dashboard.rule.nacos.NacosConfigUtil;
 import com.alibaba.nacos.api.config.ConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +16,18 @@ public class CustomizeAuthorityRuleNacosProvider implements DynamicRuleProvider<
     @Autowired
     private ConfigService configService;
 
+    @Autowired
+    private DynamicConfig dynamicConfig;
+
+    @Autowired
+    private NacosConfigUtil nacosConfigUtil;
+
     @Override
     public List<AuthorityRuleEntity> getRules(String appName) throws Exception {
-        return NacosConfigUtil.getRuleEntities4Nacos(
+        return nacosConfigUtil.getRuleEntitiesFromNacos(
                 this.configService,
                 appName,
-                NacosConfigUtil.AUTHORITY_DATA_ID_POSTFIX,
+                dynamicConfig.getAuthorityDataIdPostfix(),
                 AuthorityRuleEntity.class
         );
     }

@@ -22,6 +22,9 @@ import com.alibaba.csp.sentinel.util.StringUtil;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.csp.sentinel.dashboard.util.JSONUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,35 +33,20 @@ import java.util.List;
  * @author Eric Zhao
  * @since 1.4.0
  */
-public final class NacosConfigUtil {
+@Configuration
+public class NacosConfigUtil {
 
-    public static final String GROUP_ID = "SENTINEL_GROUP";
+    @Autowired
+    private DynamicConfig dynamicConfig;
 
-    public static final String DEGRADE_DATA_ID_POSTFIX = "-degrade-rules";
-    public static final String FLOW_DATA_ID_POSTFIX = "-flow-rules";
-    public static final String PARAM_FLOW_DATA_ID_POSTFIX = "-param-flow-rules";
-    public static final String SYSTEM_FULE_DATA_ID_POSTFIX = "-system-rules";
-    public static final String AUTHORITY_DATA_ID_POSTFIX = "-authority-rules";
-    public static final String CLUSTER_MAP_DATA_ID_POSTFIX = "-cluster-map";
-    public static final String DASHBOARD_POSTFIX = "-dashboard";
-
-    /**
-     * cc for `cluster-client`
-     */
     public static final String CLIENT_CONFIG_DATA_ID_POSTFIX = "-cc-config";
-    /**
-     * cs for `cluster-server`
-     */
     public static final String SERVER_TRANSPORT_CONFIG_DATA_ID_POSTFIX = "-cs-transport-config";
     public static final String SERVER_FLOW_CONFIG_DATA_ID_POSTFIX = "-cs-flow-config";
     public static final String SERVER_NAMESPACE_SET_DATA_ID_POSTFIX = "-cs-namespace-set";
 
-    private NacosConfigUtil() {}
-
-
     /**
      * 方法实现说明:从nacos服务上获取配置
-     * @param configService:nacos配置服务
+     * @param configService:nacos配置服 务
      * @param appName 应用微服务名称
      * @param postfix  eg.NacosConfigUtil.FLOW_DATA_ID_POSTFIX
      * @param clazz:反序列化class类型
@@ -66,9 +54,9 @@ public final class NacosConfigUtil {
      * @exception:
      * @date:2019/12/2 14:38
      */
-    public static <T> List<T> getRuleEntities4Nacos(ConfigService configService, String appName, String postfix, Class<T> clazz) throws NacosException {
+    public <T> List<T> getRuleEntitiesFromNacos(ConfigService configService, String appName, String postfix, Class<T> clazz) throws NacosException {
         //去nacos注册中心获取配置
-        String rules = configService.getConfig(genDataId(appName, postfix) + DASHBOARD_POSTFIX,NacosConfigUtil.GROUP_ID,3000);
+        String rules = configService.getConfig(genDataId(appName, postfix) + dynamicConfig.getDashboardPostfix(),dynamicConfig.getGroup(),3000);
 
         if (StringUtil.isEmpty(rules)) {
             return new ArrayList<>();
@@ -87,7 +75,7 @@ public final class NacosConfigUtil {
      * @exception:
      * @date:2019/12/2 14:49
      */
-    public static <T> void setRuleString2Nacos(ConfigService configService, String app, String postfix, List<T> rules) throws NacosException {
+    public  <T> void setRuleString2Nacos(ConfigService configService, String app, String postfix, List<T> rules) throws NacosException {
         AssertUtil.assertNotBlank(app,"app name not be empty");
 
         List<Rule> ruleList = new ArrayList<>();
@@ -104,14 +92,14 @@ public final class NacosConfigUtil {
         //发布配置
         configService.publishConfig(
                 dataId,
-                NacosConfigUtil.GROUP_ID,
+                dynamicConfig.getGroup(),
                 JSONUtils.toJSONString(ruleList)
         );
 
         // 存储，给控制台使用
         configService.publishConfig(
-                dataId + DASHBOARD_POSTFIX,
-                NacosConfigUtil.GROUP_ID,
+                dataId + dynamicConfig.getDashboardPostfix(),
+                dynamicConfig.getGroup(),
                 JSONUtils.toJSONString(rules)
         );
     }
@@ -125,7 +113,7 @@ public final class NacosConfigUtil {
      * @exception:
      * @date:2019/12/2 14:34
      */
-    private static String genDataId(String appName, String postfix) {
+    private  String genDataId(String appName, String postfix) {
         return appName + postfix;
     }
 }

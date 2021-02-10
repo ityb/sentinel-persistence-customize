@@ -38,10 +38,13 @@ public class FlowRuleNacosProvider implements DynamicRuleProvider<List<FlowRuleE
     @Autowired
     private Converter<String, List<FlowRuleEntity>> converter;
 
+    @Autowired
+    private DynamicConfig dynamicConfig;
+
     @Override
     public List<FlowRuleEntity> getRules(String appName) throws Exception {
-        String rules = configService.getConfig(appName + NacosConfigUtil.FLOW_DATA_ID_POSTFIX,
-            NacosConfigUtil.GROUP_ID, 3000);
+        String rules = configService.getConfig(appName + dynamicConfig.getFlowDataIdPostfix(),
+                dynamicConfig.getGroup(), 3000);
         if (StringUtil.isEmpty(rules)) {
             return new ArrayList<>();
         }

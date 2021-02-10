@@ -2,6 +2,7 @@ package com.alibaba.csp.sentinel.dashboard.rule.nacos.hotparamrule;
 
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.ParamFlowRuleEntity;
 import com.alibaba.csp.sentinel.dashboard.rule.DynamicRuleProvider;
+import com.alibaba.csp.sentinel.dashboard.rule.nacos.DynamicConfig;
 import com.alibaba.csp.sentinel.dashboard.rule.nacos.NacosConfigUtil;
 import com.alibaba.nacos.api.config.ConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +16,15 @@ public class CustomizeHotParamFlowRuleNacosProvider implements DynamicRuleProvid
     @Autowired
     private ConfigService configService;
 
+    @Autowired
+    private DynamicConfig dynamicConfig;
+
+    @Autowired
+    private NacosConfigUtil nacosConfigUtil;
+
     @Override
     public List<ParamFlowRuleEntity> getRules(String appName) throws Exception {
-        return NacosConfigUtil.getRuleEntities4Nacos(
-                configService,
-                appName,
-                NacosConfigUtil.PARAM_FLOW_DATA_ID_POSTFIX,
-                ParamFlowRuleEntity.class
-        );
+        return nacosConfigUtil.getRuleEntitiesFromNacos(configService, appName, dynamicConfig.getParamFlowDataIdPostfix(),
+                ParamFlowRuleEntity.class);
     }
 }

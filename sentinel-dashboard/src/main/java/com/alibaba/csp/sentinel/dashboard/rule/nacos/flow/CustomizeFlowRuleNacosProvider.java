@@ -17,6 +17,7 @@ package com.alibaba.csp.sentinel.dashboard.rule.nacos.flow;
 
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.FlowRuleEntity;
 import com.alibaba.csp.sentinel.dashboard.rule.DynamicRuleProvider;
+import com.alibaba.csp.sentinel.dashboard.rule.nacos.DynamicConfig;
 import com.alibaba.csp.sentinel.dashboard.rule.nacos.NacosConfigUtil;
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.util.StringUtil;
@@ -36,13 +37,16 @@ public class CustomizeFlowRuleNacosProvider implements DynamicRuleProvider<List<
 
     @Autowired
     private ConfigService configService;
+
     @Autowired
     private Converter<String, List<FlowRuleEntity>> converter;
 
+    @Autowired
+    private DynamicConfig dynamicConfig;
+
     @Override
     public List<FlowRuleEntity> getRules(String appName) throws Exception {
-        String rules = configService.getConfig(appName + NacosConfigUtil.FLOW_DATA_ID_POSTFIX,
-            NacosConfigUtil.GROUP_ID, 3000);
+        String rules = configService.getConfig(appName + dynamicConfig.getFlowDataIdPostfix(), dynamicConfig.getGroup(), 3000);
         if (StringUtil.isEmpty(rules)) {
             return new ArrayList<>();
         }
