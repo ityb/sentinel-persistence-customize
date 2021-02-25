@@ -27,7 +27,7 @@ public class CustomizeSysRuleNacosProvider implements DynamicRuleProvider<List<S
         return nacosConfigUtil.getRuleEntitiesFromNacos(
                 configService,
                 appName,
-                dynamicConfig.getSystemFuleDataIdPostfix(),
+                dynamicConfig.getSystemDataIdPostfix(),
                 SystemRuleEntity.class
         );
     }

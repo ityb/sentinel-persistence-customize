@@ -27,7 +27,7 @@ public class CustomizeSysRuleNacosPublisher implements DynamicRulePublisher<List
         nacosConfigUtil.setRuleString2Nacos(
                 configService,
                 app,
-                dynamicConfig.getSystemFuleDataIdPostfix(),
+                dynamicConfig.getSystemDataIdPostfix(),
                 rules
         );
     }

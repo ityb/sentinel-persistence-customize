@@ -103,6 +103,45 @@ public class NacosConfigUtil {
     }
 
     /**
+     * 方法实现说明:存在规则到nacos server上
+     * @author:smlz
+     * @param configService nacos配置服务
+     * @param app:微服务名称
+     * @param postfix: eg.NacosConfigUtil.FLOW_DATA_ID_POSTFIX
+     * @param rules:规则列表
+     * @return:
+     * @exception:
+     */
+    public  <T> void setGatewayRuleString2Nacos(ConfigService configService, String app, String postfix, List<T> rules) throws NacosException {
+        AssertUtil.assertNotBlank(app,"app name not be empty");
+
+//        List<Rule> ruleList = new ArrayList<>();
+
+//        for(T t:rules) {
+//            RuleEntity ruleEntity = (RuleEntity) t;
+//            Rule realRule = ruleEntity.toRule();
+//            ruleList.add(realRule);
+//        }
+
+        //生成数据ID
+        String dataId = genDataId(app,postfix);
+
+        //发布配置
+        configService.publishConfig(
+                dataId,
+                dynamicConfig.getGroup(),
+                JSONUtils.toJSONString(rules)
+        );
+
+        // 存储，给控制台使用
+        configService.publishConfig(
+                dataId + dynamicConfig.getDashboardPostfix(),
+                dynamicConfig.getGroup(),
+                JSONUtils.toJSONString(rules)
+        );
+    }
+
+    /**
      * 方法实现说明:生成数据ID
      * @author:smlz
      * @param appName 微服务名称

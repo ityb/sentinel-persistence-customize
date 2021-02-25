@@ -28,6 +28,12 @@ public class DynamicConfig {
     @Value("${spring.cloud.nacos.config.clusterMap.dataid.postfix}")
     private String clusterMapDataIdPostfix;
 
+    @Value("${spring.cloud.nacos.config.gatewayFlow.dataid.postfix}")
+    private String gatewayFlowDataIdPostfix;
+
+    @Value("${spring.cloud.nacos.config.gatewayApi.dataid.postfix}")
+    private String gatewayApiDataIdPostfix;
+
     @Value("${spring.cloud.nacos.config.dashboard.postfix}")
     private String dashboardPostfix;
 
@@ -53,7 +59,7 @@ public class DynamicConfig {
         return paramFlowDataIdPostfix;
     }
 
-    public String getSystemFuleDataIdPostfix() {
+    public String getSystemDataIdPostfix() {
         return systemDataIdPostfix;
     }
 
@@ -75,5 +81,13 @@ public class DynamicConfig {
 
     public String getNacosConfigNamespace() {
         return nacosConfigNamespace;
+    }
+
+    public String getGatewayFlowDataIdPostfix() {
+        return gatewayFlowDataIdPostfix;
+    }
+
+    public String getGatewayApiDataIdPostfix() {
+        return gatewayApiDataIdPostfix;
     }
 }
